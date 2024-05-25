@@ -1,0 +1,22 @@
+Self Reference {
+    shape: sequence_diagram
+    style: {
+        font-size: 20
+    }
+
+    analyst: analyst : FinancialAnalyst
+    system: system : ReportingSystem
+    secSystem: secSystem : SecuritySystem
+
+    analyst -> system.lifeline: getAvailableReports()
+    system.lifeline -> secSystem.lifeline: getSecurityClearance(userId: string)
+    system.lifeline <- secSystem.lifeline: userClearance {
+        style.stroke-dash: 5
+    }
+
+    system.lifeline -> system.lifeline.self: determineAvailableReports()
+    analyst <- system.lifeline: availableReports {
+        style.stroke-dash: 5
+    }
+
+}

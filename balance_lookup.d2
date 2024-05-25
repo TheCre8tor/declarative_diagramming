@@ -1,0 +1,27 @@
+Balance Lookup {
+    shape: sequence_diagram
+    style: {
+        font-size: 20
+    }
+
+    buyer: buyer : Buyer 
+    buyersBank: buyersBank : BuyersBank
+    ledger: ledger : AccountLedger 
+    buyersAccount: buyersAccount : CheckingAccount
+
+    buyer -> buyersBank.lifeline: getBalance(accountNumber: string)
+    buyersBank.lifeline -> ledger.lifeline: retrieveAccount(accountNumber: string)
+    ledger.lifeline -> buyersBank.lifeline: buyersAccount {
+        style.stroke-dash: 5
+    }
+
+    buyersBank.lifeline -> buyersAccount.lifeline: getBalance()
+    buyersBank.lifeline <- buyersAccount.lifeline: balance {
+        style.stroke-dash: 5
+    }
+
+    buyersBank.lifeline -> buyer: balance {
+        style.stroke-dash: 5
+    }
+
+}
