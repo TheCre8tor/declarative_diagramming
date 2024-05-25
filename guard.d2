@@ -1,0 +1,42 @@
+Guards {
+    shape: sequence_diagram
+    style: {
+        font-size: 20
+    }
+
+    vars: {
+        underline: {
+            underline: true
+        }
+    }
+
+    register: register : RegisterOffice {
+        style: ${underline}
+    }
+    ar: ar : AccountsReceivable {
+        style: ${underline}
+    }
+    drama: drama : Class {
+        style: ${underline}
+    }
+
+    register.lifeline -> ar.lifeline: getPastDueBalance(studentId: string)
+    register.lifeline <- ar.lifeline: pastDueBalance {
+        style: {
+            stroke-dash: 5
+            animated: true
+        }
+    }
+
+    register.lifeline -> drama.lifeline: \[pastDueBalance = 0\] \naddStudent(studentId: string)
+    drama.lifeline."The guard is the text \n[pastDueBalance = 0]. It \nmeans the student must be dept \nfree to satisfy this condition" {
+        style: {
+            font-size: 13
+            font-color: grey
+        }
+    }
+    register.lifeline <- drama.lifeline {
+        style.stroke-dash: 5
+    }
+
+}
