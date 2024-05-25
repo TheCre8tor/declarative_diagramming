@@ -1,0 +1,21 @@
+Actor Creation and Destruction: {
+    shape: sequence_diagram
+    style: {
+        font-size: 15
+    }
+
+    # -- actors --
+    alice: Alice
+    bob: Bob 
+    carl: Carl 
+    donald: { shape: person }
+
+    alice -> bob: Hello Bob, how are you?
+    bob -> alice: Fine, thank you. And you?
+
+    alice -> carl: Hi Carl!
+    alice -> carl: We are too many
+
+    carl -> donald: Hi!
+    bob -> alice: I agree
+}
