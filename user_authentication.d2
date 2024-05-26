@@ -1,0 +1,57 @@
+Webpage User Authentication {
+    shape: sequence_diagram
+    style: {
+        font-size: 20
+    }
+
+    user: :User {
+        shape: person 
+    }
+    browser: :WebBrowser
+    app: :Application
+    auth_server: :Web\nAuthorization\nServer
+    content_server: :ContentServer
+
+    user.lifeline -> browser.lifeline: Get webpage resource
+    browser.lifeline -> app.lifeline: Request webpage access
+    browser.lifeline <- app.lifeline: <<http redirect>> {
+        style.stroke-dash: 5
+    }
+    browser.lifeline -> auth_server: Authorize
+    browser.lifeline <- auth_server: Permission form {
+        style.stroke-dash: 5
+    }
+    user.lifeline <- browser.lifeline: Permission form {
+        style.stroke-dash: 5
+    }
+
+    alt: {
+        \[permission granted\]: {
+            browser.lifeline -> app.lifeline: Web auth code
+            app.lifeline -> auth_server.lifeline: Web auth code
+            app.lifeline <- auth_server.lifeline: Access token {
+                style.stroke-dash: 5
+            }
+            app.lifeline -> content_server.lifeline: Access user protected resource
+            app.lifeline <- content_server.lifeline: User protected resource {
+                style.stroke-dash: 5
+            }
+            browser.lifeline <- app.lifeline: User protected \nresource {
+                style.stroke-dash: 5
+            }
+            user.lifeline <- browser.lifeline: User protected \nresource {
+                style.stroke-dash: 5
+            }
+        }
+
+        \[no permission\]: {
+            browser.lifeline -> app.lifeline: No authorization
+            browser.lifeline <- app.lifeline: Web resource \nnot available {
+                style.stroke-dash: 5
+            }
+            user.lifeline <- browser.lifeline: Web resource \nnot available {
+                style.stroke-dash: 5
+            }
+        }
+    }
+}
