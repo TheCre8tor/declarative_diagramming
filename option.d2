@@ -1,0 +1,30 @@
+Option: {
+    shape: sequence_diagram
+    style: {
+        font-size: 20
+    }
+
+    student: student : User
+    register: register : Register
+    ar: ar : AccountsReceivable
+    drama: drama : Class
+
+    student -> register.lifeline
+    register.lifeline -> ar.lifeline: getPastDueBalance(studentId: string)
+    register.lifeline <- ar.lifeline: pastDueBalance {
+        style.stroke-dash: 5
+    }
+
+    opt: {
+        \[pastDueBalance = 0\]: {
+            register.lifeline -> drama.span1: addStudent(studentIs: string)
+            register.lifeline -> drama.span2: getCostOfClass()
+            register.lifeline <- drama.span2: classCost {
+                style.stroke-dash: 5
+            }
+
+            register.lifeline -> ar.span: chargeForClass()
+        }
+    }
+
+}
