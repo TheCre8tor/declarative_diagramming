@@ -1,0 +1,35 @@
+How Alternatives Works: {
+    shape: sequence_diagram
+    style: {
+        font-size: 20
+    }
+
+    user: user : User
+    bank: bank : Bank 
+    check: theCheck : Check
+    account: account : CheckingAccount
+
+    user -> bank
+    bank.lifeline -> check.lifeline: getAmount()
+    bank.lifeline <- check.lifeline: amount {
+        style.stroke-dash: 5
+    }
+
+    bank.lifeline -> account.lifeline: getBalance()
+    bank.lifeline <- account.lifeline: balance {
+        style.stroke-dash: 5
+    }
+
+    alt: {
+        \[balance \>= amount\]: {
+            bank.lifeline -> account.span1: addDebitTransaction\n(checkNumber: number, amount: string)
+            bank.lifeline -> account.span2: storePhotoOfCheck(theCheck)
+        }
+
+        \[else\]: {
+            bank.lifeline -> account.span3: addInsufficientFundFee()
+            bank.lifeline -> account.span4: noteReturnedCheck(theCheck)
+            bank.lifeline -> bank.lifeline.span: returnCheck(theCheck)
+        }
+    }
+}
