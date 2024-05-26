@@ -1,0 +1,51 @@
+Loop: {
+    shape: sequence_diagram
+    style.font-size: 30
+
+    analyst: analyst : FinancialAnalyst
+    system: system : ReportingSystem
+    sec_system: secSystem : SecuritySystem
+    reports: :Report 
+    available_reports: availableReports : Reports
+    reports_enu: reportsEnu : Reports
+    a_report: aReport : Report
+
+    analyst -> system.lifeline: getAvailableReports()
+    system.lifeline -> sec_system.lifeline: getSecurityClearance(userId: string)
+    system.lifeline <- sec_system.lifeline: userClearance {
+        style.stroke-dash: 5
+    }
+
+    system.lifeline -> reports.lifeline: new()
+    system.lifeline <- reports.lifeline: availableReports {
+        style.stroke-dash: 5
+    }
+
+    system.lifeline -> system.lifeline.span: getAllReports()
+
+    system.lifeline -> reports_enu.lifeline: hasAnotherReport()
+    system.lifeline <- reports_enu.lifeline: hasAnotherReport {
+        style.stroke-dash: 5
+    }
+
+    loop: {
+        \[hasAnotherReport = true\]: {
+            system.lifeline -> reports_enu.span1: getNextReport()
+            system.lifeline <- reports_enu.span1: aReport {
+                style.stroke-dash: 5
+            }
+
+            system.lifeline -> a_report.lifeline: getRequiredSecurityLevel()
+            system.lifeline <- a_report.lifeline: requiredSecurityLevel {
+                style.stroke-dash: 5
+            }
+
+            system.lifeline -> available_reports.lifeline: \[userClearanceLevel \>= requiredLevel\] \nadd(aReport)
+
+            system.lifeline -> reports_enu.span2: hasAnotherReport()
+            system.lifeline <- reports_enu.span2: hasAnotherReport {
+                style.stroke-dash: 5
+            }
+        }
+    }
+}
